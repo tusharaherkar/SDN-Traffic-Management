@@ -1,0 +1,17 @@
+{
+  "ovsdb:queues": [
+    {
+      "queue-id": "QUEUE-1",
+      "queues-other-config": [
+        {
+          "queue-other-config-key": "max-rate",
+          "queue-other-config-value": "50000000"
+        },
+        {
+          "queue-other-config-key": "min-rate",
+          "queue-other-config-value": "5100000"
+        }
+      ]
+    }
+  ]
+}

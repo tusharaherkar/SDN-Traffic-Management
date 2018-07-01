@@ -1,0 +1,137 @@
+to run opendaylight controller...  run 
+1-->./bin/karaf (In the karaf directory path)
+2-->http://172.16.49.241:8181/index.html#/node/index  (Ip may vary since DHCp is used)
+
+
+-----------------------
+Links
+http://www.brianlinkletter.com/using-the-opendaylight-sdn-controller-with-the-mininet-network-emulator/
+
+
+------------------------------------------------
+http://www.brianlinkletter.com/set-up-mininet/
+
+Note --Host-only network address: 192.168.56.0/24
+Host IP address on host-only network: 192.168.56.1/24
+Virtual Machine’s virtual interface IP address on host-only network: 192.168.56.101/24
+
+--------------------------------------------------------------------
+userid=mininet and password=mininet
+
+command to connect mininet from host machine ssh -Y mininet@192.168.56.101
+
+NOTE : Everytime run ifconfig -a 
+and the sudo eth0 and sudo eth1 before statring work on mininet VM
+
+----------------------------------------------------
+Using the OpenDaylight SDN Controller with the Mininet Network Emulator
+
+URL :	http://www.brianlinkletter.com/using-the-opendaylight-sdn-controller-with-the-mininet-network-emulator/
+
+
+sudo mn --topo linear,3 --mac --controller=remote,ip=172.16.49.241,port=6633 --switch ovsk,protocols=OpenFlow13
+
+----------------------------------------------------------------------------------
+Before closing sudo mn-c (always rememberr ot do that)
+-------------------------------------------------------------------------------------
+mininet Edit details
+
+http://www.brianlinkletter.com/how-to-use-miniedit-mininets-graphical-user-interface/
+
+sudo ~/mininet/examples/miniedit.py
+
+--------------------------------------------------------------------------------------
+listing the full details of all interfaces of switches: 
+ovs-vsctl list Interface 
+
+dump the flow of only switch:
+ovs-ofctl dump-flows s1
+
+ovsdb-client dump Open_vSwitch|more
+
+set action=drop for certain host
+ovs-ofctl add-flow s1 ip,nw_dst=10.0.0.3,actions=drop (enqueue:1:1)
+
+
+https://www.youtube.com/watch?v=xZa53O18JmA&feature=youtu.be
+
+
+----------------------------------------
+https://wiki.opendaylight.org/view/OpenDaylight_dlux:yangUI-user
+
+
+------------------
+traffic generation command
+
+iperf -s -i 1
+iperf -i 1 -c (IP of server)
+
+----------------------------------
+manually set flows from root terminal
+
+sudo ovs-vsctl set port s1-eth1 qos=@newqos -- --id=@newqos create qos type=linux-htb other-config:max-rate=5000000 queues=1=@q1 -- --id=@q1 create queue other-config:min-rate=500000 other-config:max-rate=5000000 
+------------------------------------------------
+open v swith commands:
+
+http://openvswitch.org/support/dist-docs/ovs-vsctl.8.txt
+http://openvswitch.org/support/dist-docs/ovs-ofctl.8.txt
+
+-----------------------------------------
+Topology creation
+-----------------------------------
+run ovs switch commands
+
+ovs-vsctl add-br
+ovs-vsctl del-br
+
+isting the full details of all interfaces of switches: 
+--> ovs-vsctl list Interface 
+
+dump the flow of only switch:
+--> sudo ovs-ofctl dump-flows s1
+--> sudo ovs-ofctl -O OpenFlow13 dump-flows s1
+
+--> ovsdb-client dump Open_vSwitch|more
+ 
+-----------------------
+generate traffic
+
+iperf -s -i 1
+iperf -i 1 -c (IP of server)
+-------------------------------------
+manually set flows from root terminal
+
+sudo ovs-vsctl set port s1-eth1 qos=@newqos -- --id=@newqos create qos type=linux-htb other-config:max-rate=20000000 queues=1=@q1 -- --id=@q1 create queue other-config:min-rate=8000000 other-config:max-rate=8000000 
+
+----------------------
+Yangman UI GET method 
+inventory openflow:1
+---------------
+URL for get post emthod implementation in java
+https://sdngeeks.wordpress.com/2014/07/30/adding-flows-in-opendaylight-using-java/
+
+-------------------------------------------------------------------------------------
+
+https://wiki.opendaylight.org/view/OVSDB_Integration:Mininet_OVSDB_Tutorial
+
+
+---------------------------
+connect to ovsdb:
+http://docs.opendaylight.org/en/stable-nitrogen/user-guide/ovsdb-user-guide.html
+--------------------------------------
+Adding flows:
+http://docs.opendaylight.org/en/stable-nitrogen/user-guide/openflow-plugin-project-user-guide.html
+
+---------------------------------------
+adding queue and qos through postman:
+https://github.com/opendaylight/ovsdb/blob/stable/boron/resources/commons/Qos-and-Queue-Collection.json.postman_collection
+
+--------------------------------------------
+Delete all qos and queue from tables in db Open_vSwitch and detach the qos from port (s1-eth1)
+
+$ sudo ovs-vsctl clear port s1-eth1 qos
+$ sudo ovs-vsctl --all destroy qos
+$ sudo ovs-vsctl --all destroy queue 
+
+-------------------------------------------------------------------------------------------------
+

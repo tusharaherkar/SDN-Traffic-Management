@@ -1,0 +1,15 @@
+{
+	"network-topology:termination-point": [
+			{
+				"ovsdb:name": "s1-eth1",
+					"tp-id": "s1-eth1",
+						"ovsdb:qos-entry": [
+							{
+								"qos-key": 1,
+								"qos-ref": "/network-topology:network-topology/network-topology:topology[network-topology:topology-id='ovsdb:1']/network-topology:node[network-topology:node-id='ovsdb:HOST1']/ovsdb:qos-entries[ovsdb:qos-id='QOS-1']"
+							}
+						]
+			}
+	]
+}
+
