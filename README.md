@@ -5,7 +5,7 @@ The project demonstraited detailed steps to follow for **_traffic management bet
 
 ## Files
 ###### MidsemDemoReport: 
-This includes detailed report of progress of project upto mid semester which installation of required softwares, setting up topology using mininet and OpenDaylight Controller and testing the topology.
+This includes detailed report of progress of project upto mid semester which includes installation of required softwares, setting up topology using mininet and OpenDaylight Controller and testing the topology.
 
 ## Dependencies
 #### Install following packages on ubuntu
