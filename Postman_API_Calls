@@ -1,0 +1,139 @@
+Important Instructions to follow:
+
+1) Before giving these API calls connect OpenDayLight Controller to OVSDB situated at openVswitch either through active connection or passive connection (Refer OpenDayLight manual to do connection)
+2) Install Postman or similar Restful api calls software to call following api calls
+
+
+---------------------------------------------------------------------------------------
+GET:
+http://localhost:8181/restconf/config/network-topology:network-topology/topology/ovsdb:1/
+--------------------------------------------------------------------------------------------
+Make entry in queue table --->
+PUT:
+http://localhost:8181/restconf/config/network-topology:network-topology/topology/ovsdb:1/node/ovsdb:HOST1/ovsdb:queues/QUEUE-1/
+BODY:
+{
+  "ovsdb:queues": [
+    {
+      "queue-id": "QUEUE-1",
+      "queues-other-config": [
+        {
+          "queue-other-config-key": "max-rate",
+          "queue-other-config-value": "50000000"
+        },
+        {
+          "queue-other-config-key": "min-rate",
+          "queue-other-config-value": "5000000"
+        }
+      ]
+    }
+  ]
+}
+-------------------------------------------------------------------------------------
+GET:
+http://localhost:8181/restconf/operational/network-topology:network-topology/topology/ovsdb:1/node/ovsdb:HOST1/ovsdb:queues/QUEUE-1/
+-----------------------------------------------------------------------------------
+make entry in qos table with one of the queues mapped with it ---->
+PUT:
+http://localhost:8181/restconf/config/network-topology:network-topology/topology/ovsdb:1/node/ovsdb:HOST1/ovsdb:qos-entries/QOS-1/
+BODY:
+{
+	"ovsdb:qos-entries": [
+		{ "qos-id": "QOS-1",
+		  "qos-type": "ovsdb:qos-type-linux-htb",
+			"queue-list": [
+				{ "queue-number": "0",
+					"queue-ref": "/network-topology:network-topology/network-topology:topology[network-topology:topology-id='ovsdb:1']/network-topology:node[network-topology:node-id='ovsdb:HOST1']/ovsdb:queues[ovsdb:queue-id='QUEUE-1']"
+				}
+			]
+		}
+	]
+}
+OR
+BODY:
+{
+	"ovsdb:qos-entries": [
+		{ "qos-id": "QOS-1",
+		  "qos-type": "ovsdb:qos-type-linux-htb",
+			"queue-list": [
+				{ "queue-number": "0",
+					"queue-ref": "/network-topology:network-topology/network-topology:topology[network-topology:topology-id='ovsdb:1']/network-topology:node[network-topology:node-id='ovsdb:HOST1']/ovsdb:queues[ovsdb:queue-id='QUEUE-1']"
+				}
+			],
+			"qos-other-config": [
+        {
+          "other-config-key": "max-rate",
+          "other-config-value": "50000000"
+        }
+        
+      ]
+		}
+	]
+}
+---------------------------------------------------------------------------------------------------------
+GET:
+http://localhost:8181/restconf/operational/network-topology:network-topology/topology/ovsdb:1/node/ovsdb:HOST1/ovsdb:qos-entries/QOS-1/
+--------------------------------------------------------------------------------------------------
+Add existing QoS ID to a termination point------->
+PUT:
+http://localhost:8181/restconf/config/network-topology:network-topology/topology/ovsdb:1/node/ovsdb:HOST1%2Fbridge%2Fs1/termination-point/s1-eth1/
+BODY:
+{
+	"network-topology:termination-point": [
+			{
+				"ovsdb:name": "s1-eth1",
+					"tp-id": "s1-eth1",
+						"ovsdb:qos-entry": [
+							{
+								"qos-key": 1,
+								"qos-ref": "/network-topology:network-topology/network-topology:topology[network-topology:topology-id='ovsdb:1']/network-topology:node[network-topology:node-id='ovsdb:HOST1']/ovsdb:qos-entries[ovsdb:qos-id='QOS-1']"
+							}
+						]
+			}
+	]
+}
+
+
+
+--------------------------------------------------------------------------------------------------------------
+ADD Flow entry in flow table:
+PUT:
+
+    Set headers:
+        Content-Type: application/xml
+        Accept: application/xml
+        Authentication
+    Use URL: “http://localhost:8181/restconf/config/opendaylight-inventory:nodes/node/openflow:1/table/0/flow/1”
+    
+    Use Body:
+    
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flow xmlns="urn:opendaylight:flow:inventory">
+    <priority>2</priority>
+    <flow-name>Foo</flow-name>
+    <match>
+        <ethernet-match>
+            <ethernet-type>
+                <type>2048</type>
+            </ethernet-type>
+        </ethernet-match>
+        <ipv4-destination>10.0.10.2/24</ipv4-destination>
+    </match>
+    <id>1</id>
+    <table_id>0</table_id>
+    <instructions>
+        <instruction>
+            <order>0</order>
+            <apply-actions>
+                <action>
+                   <order>0</order>
+                   <dec-nw-ttl/>
+                </action>
+            </apply-actions>
+        </instruction>
+    </instructions>
+</flow>
+
+-----------------------------------------------------------------------------------
+GET:
+ http://localhost:8181/restconf/operational/opendaylight-inventory:nodes/node/openflow:1/table/0/

@@ -4,6 +4,8 @@ The project consists of OpenDayLight (Carbon/Nitrogen Distribution) RESTful api 
 The project demonstraited detailed steps to follow for **_traffic management between three hosts_** 
 
 ## Files
+###### MidsemDemoReport: 
+This includes detailed report of progress of project upto mid semester which installation of required softwares, setting up topology using mininet and OpenDaylight Controller and testing the topology.
 
 ## Dependencies
 #### Install following packages on ubuntu
@@ -22,3 +24,4 @@ The project demonstraited detailed steps to follow for **_traffic management bet
 
 #### Open V switch Commands
 1) http://openvswitch.org/support/dist-docs/ovs-ofctl.8.txt
+2) https://github.com/opendaylight/ovsdb/blob/stable/boron/resources/commons/Qos-and-Queue-Collection.json.postman_collection
