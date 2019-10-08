@@ -1,4 +1,4 @@
-# SDN_traffic_management
+# SDN Traffic Management
 The project consists of OpenDayLight (Carbon/Nitrogen Distribution) RESTful api calls for managing traffic using Software Defined Networks.
 
 The project demonstraited detailed steps to follow for **_traffic management between three hosts_** 
